@@ -1,0 +1,20 @@
+{
+  "name": "coop-ia-wanda",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "start": "node scripts/dev.mjs",
+    "admin": "node scripts/admin.mjs",
+    "deploy:cloudflare": "npx wrangler@4 deploy",
+    "reports": "node scripts/reports.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

@@ -1,0 +1,8 @@
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import {JSDOM,VirtualConsole} from 'jsdom';
+import {sqliteD1} from '../scripts/sqlite.mjs';
+export function seed(){const html=readFileSync(new URL('../original/ProCoop_Wanda_Original.html',import.meta.url),'utf8'),part=html.match(/<script>\s*'use strict';([\s\S]*?)function loadDB/)[1];return JSON.parse(JSON.stringify(vm.runInNewContext(part+';makeSeed()')));}
+export function database(){const db=sqliteD1();db.exec(readFileSync(new URL('../worker/schema.sql',import.meta.url),'utf8'));return db;}
+export function browser({fast=false,storage}={}){const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));const dom=new JSDOM(readFileSync(new URL('../dist/index.html',import.meta.url),'utf8'),{url:'https://coop.test',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc,beforeParse(w){w.scrollTo=()=>{};w.print=()=>{};w.confirm=()=>true;w.fetch=async()=>new Response('{}',{status:404,headers:{'content-type':'application/json'}});w.requestAnimationFrame=cb=>w.setTimeout(cb,15);w.cancelAnimationFrame=id=>w.clearTimeout(id);w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};w.URL.createObjectURL=()=> 'blob:test';w.URL.revokeObjectURL=()=>{};if(fast){const timer=w.setTimeout.bind(w);w.setTimeout=(fn,ms,...args)=>timer(fn,ms===350?1:ms,...args);}if(storage)for(const [key,val]of Object.entries(storage))w.localStorage.setItem(key,val);}});return {dom,w:dom.window,errors};}
+export const wait=ms=>new Promise(r=>setTimeout(r,ms));

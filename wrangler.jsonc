@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "coop-ia-wanda",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-09-01",
+  "assets": {"directory": "./dist", "binding": "ASSETS", "run_worker_first": ["/api/*"]},
+  "d1_databases": [{"binding": "DB", "database_name": "coop-ia", "database_id": "REEMPLAZAR_CON_ID_D1", "migrations_dir": "worker/migrations"}],
+  "vars": {"FREE_TIER_CONFIRMED": "false", "FREE_TIER_REVIEW_UNTIL": "", "MAX_CALLS_PER_DAY": "20", "MAX_RESERVED_TOKENS_PER_DAY": "180000"}
+}
